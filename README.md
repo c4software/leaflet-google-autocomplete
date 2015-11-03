@@ -12,3 +12,9 @@ map.addLayer(googleLayer);
 
 new L.Control.GoogleAutocomplete().addTo(map);
 ````
+
+# Demo
+
+To try it : 
+
+http://rawgit.com/c4software/leaflet-google-autocomplete/master/example/example.html
