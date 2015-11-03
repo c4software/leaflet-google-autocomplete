@@ -58,20 +58,11 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         searchbox.placeholder = this.options.searchLabel;
         this._searchbox = searchbox;
 
-        var closetomebox = document.createElement('div');
-        closetomebox.id = 'leaflet-control-googleautocomplete-closetome';
-        closetomebox.className = 'leaflet-control-googleautocomplete-closetome';
-        this._closetomebox = closetomebox;
-
         $(searchwrapper).append(this._searchbox);
         $(this._container).append(searchwrapper, this._closetomebox);
-        $(this._closetomebox).html("<span>"+this.options.closeToMeLabel+"</span>");
-
+        
         L.DomEvent.addListener(this._container, 'click', L.DomEvent.stop);
         L.DomEvent.disableClickPropagation(this._container);
-        
-        L.DomEvent.addListener(this._closetomebox, 'click', this._closeToMe, this);
-        L.DomEvent.disableClickPropagation(this._closetomebox);
         
         // init google autocomplete
         var autocomplete = new google.maps.places.Autocomplete(this._searchbox);
@@ -95,16 +86,6 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         });        
         
         return this._container;
-    },
-            
-    _closeToMe: function (e) {
-        if (navigator.geolocation) {
-            var Me = this;
-            navigator.geolocation.getCurrentPosition(function(position) {
-                Me._map.panTo([position.coords.latitude, position.coords.longitude]);
-                Me._map.setZoom(Me.options.zoomLevel);
-            });
-        }
-    },
+    }
 });
 })(jQuery);
