@@ -17,7 +17,7 @@ L.GoogleAutocomplete.Result = function (x, y, label) {
 
 L.Control.GoogleAutocomplete = L.Control.extend({
     options: {
-        position: 'topright'
+        position: 'topcenter'
     },
 
     initialize: function (options) {
@@ -43,8 +43,8 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         var $controlContainer = $(map._controlContainer);
 
         if ($controlContainer.children('.leaflet-top.leaflet-center').length == 0) {
-            $controlContainer.append('<div class="leaflet-top leaflet-right"></div>');
-            map._controlCorners.topcenter = $controlContainer.children('.leaflet-top.leaflet-right').first()[0];
+            $controlContainer.append('<div class="leaflet-top leaflet-center"></div>');
+            map._controlCorners.topcenter = $controlContainer.children('.leaflet-top.leaflet-center').first()[0];
         }
 
         this._map = map;
@@ -67,7 +67,7 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         
         // init google autocomplete
         var autocomplete = new google.maps.places.Autocomplete(this._searchbox);
-        autocomplete.setTypes(['geocode']);
+        //autocomplete.setTypes(['geocode']);
 
         $(this._searchbox).keypress(function(event){
             if(event.keyCode == 13 || event.keyCode == 9) {
@@ -107,8 +107,7 @@ L.Control.GoogleAutocomplete = L.Control.extend({
 
         function moveMarker(placeName, lat, lng){
             $('leaflet-control-googleautocomplete-qry').removeClass('notfound');
-            map.panTo([lat, lng]);
-            map.setZoom(Me.options.zoomLevel);
+            map.setView([lat, lng], Me.options.zoomLevel);
         }
 
         function selectFirstResult() {
