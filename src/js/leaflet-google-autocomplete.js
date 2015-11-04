@@ -27,7 +27,6 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         }
         var optionsTmp = {
             'searchLabel': options.searchLabel || 'search for address...',
-            'closeToMeLabel': options.closeToMeLabel || 'Close to me',
             'notFoundMessage' : options.notFoundMessage || 'Sorry, that address could not be found.',
             'zoomLevel': options.zoomLevel || 13
         }
