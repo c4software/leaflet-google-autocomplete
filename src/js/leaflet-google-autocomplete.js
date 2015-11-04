@@ -29,8 +29,10 @@ L.Control.GoogleAutocomplete = L.Control.extend({
             'searchLabel': options.searchLabel || 'search for address...',
             'notFoundMessage' : options.notFoundMessage || 'Sorry, that address could not be found.',
             'zoomLevel': options.zoomLevel || 13
-        }
-        L.Util.extend(this.options, optionsTmp);        
+        };
+
+        L.Util.extend(this.options, optionsTmp);
+
         /*$.ajax({
             url: "https://maps.googleapis.com/maps/api/js?v=3&callback=onLoadGoogleApiCallback&sensor=false&libraries=places",
             dataType: "script"
@@ -67,6 +69,27 @@ L.Control.GoogleAutocomplete = L.Control.extend({
         var autocomplete = new google.maps.places.Autocomplete(this._searchbox);
         autocomplete.setTypes(['geocode']);
 
+        $(this._searchbox).keypress(function(event){
+            if(event.keyCode == 13 || event.keyCode == 9) {
+
+                $(event.target).blur();
+
+                if($(".pac-container .pac-item:first span:eq(3)").text() == "") {
+                    firstValue = $(".pac-container .pac-item:first .pac-item-query").text();
+                }
+                else {
+                    firstValue = $(".pac-container .pac-item:first .pac-item-query").text() + ", " + $(".pac-container .pac-item:first span:eq(3)").text();
+                }
+                event.target.value = firstValue;
+
+                selectFirstResult();
+
+                return false;
+            } else {
+                return true;
+            }
+        });
+
         var Me = this;
         google.maps.event.addListener(autocomplete, 'place_changed', function() {
             var place = autocomplete.getPlace();
@@ -78,12 +101,31 @@ L.Control.GoogleAutocomplete = L.Control.extend({
 
             // If the place has a geometry, then update the map
             if (place.geometry.location) {
-                $('leaflet-control-googleautocomplete-qry').removeClass('notfound');
-                map.panTo([place.geometry.location.lat(), place.geometry.location.lng()]);
-                map.setZoom(Me.options.zoomLevel);
+                moveMarker("", place.geometry.location.lat(), place.geometry.location.lng());
             }
-        });        
-        
+        });
+
+        function moveMarker(placeName, lat, lng){
+            $('leaflet-control-googleautocomplete-qry').removeClass('notfound');
+            map.panTo([lat, lng]);
+            map.setZoom(Me.options.zoomLevel);
+        }
+
+        function selectFirstResult() {
+            var firstResult = $(".pac-container .pac-item:first").text();
+
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({"address":firstResult }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var lat = results[0].geometry.location.lat(),
+                        lng = results[0].geometry.location.lng(),
+                        placeName = results[0].address_components[0].long_name;
+
+                    moveMarker(placeName, lat, lng);
+                }
+            });
+        }
+
         return this._container;
     }
 });
